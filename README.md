@@ -8,8 +8,9 @@ critical issues, quick wins, heatmaps, and PDF-ready output.
 Built for founders, consultants, and growth teams who want sharper
 website analysis without the usual vague AI feedback loop.
 
-<img width="405" height="637" alt="Screenshot 2026-05-04 at 12 22 27" src="https://github.com/user-attachments/assets/2537e94d-50ac-48de-a852-2b7081c0f7e4" />
 <img width="829" height="743" alt="Screenshot 2026-05-04 at 12 26 21" src="https://github.com/user-attachments/assets/1460bfd2-a5c0-4b54-a65d-14e2a2315ccd" />
+
+<img width="405" height="637" alt="Screenshot 2026-05-04 at 12 22 27" src="https://github.com/user-attachments/assets/2537e94d-50ac-48de-a852-2b7081c0f7e4" />
 
 
 ## What it does
