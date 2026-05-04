@@ -254,6 +254,59 @@
         color: var(--muted);
       }
 
+      details {
+        width: 100%;
+      }
+
+      summary {
+        list-style: none;
+      }
+
+      summary::-webkit-details-marker {
+        display: none;
+      }
+
+      .optional-panel {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: #fbfcfe;
+        overflow: hidden;
+      }
+
+      .optional-panel summary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 16px 18px;
+        cursor: pointer;
+        font-weight: 700;
+      }
+
+      .optional-panel summary span {
+        color: var(--muted);
+        font-size: 0.94rem;
+        font-weight: 500;
+      }
+
+      .optional-panel summary::after {
+        content: "+";
+        color: var(--muted);
+        font-size: 1.2rem;
+        line-height: 1;
+      }
+
+      .optional-panel[open] summary::after {
+        content: "−";
+      }
+
+      .optional-panel-body {
+        display: grid;
+        gap: 16px;
+        padding: 0 18px 18px;
+        border-top: 1px solid var(--line);
+      }
+
       .error {
         color: #b42318;
       }
@@ -381,6 +434,52 @@
                 placeholder="We are a B2B SaaS selling to HR teams and want to improve demo conversion."
               ></textarea>
             </label>
+
+            <details class="full optional-panel" id="focus-panel">
+              <summary>
+                Specific page focus
+                <span>Optional deeper review for one page</span>
+              </summary>
+              <div class="optional-panel-body">
+                <p class="helper">
+                  Keep this closed for the standard audit. Open it only if you want extra attention on one specific page.
+                </p>
+                <div class="form-grid">
+                  <label class="full">
+                    Specific page URL
+                    <input
+                      id="focus_page_url"
+                      name="focus_page_url"
+                      placeholder="https://example.com/exercise"
+                    />
+                  </label>
+
+                  <label>
+                    Page type
+                    <select id="focus_page_label" name="focus_page_label">
+                      <option value="">Choose a page type</option>
+                      <option value="Exercise page">Exercise page</option>
+                      <option value="Pricing page">Pricing page</option>
+                      <option value="Landing page">Landing page</option>
+                      <option value="Demo page">Demo page</option>
+                      <option value="Feature page">Feature page</option>
+                      <option value="About page">About page</option>
+                      <option value="Contact page">Contact page</option>
+                      <option value="Checkout page">Checkout page</option>
+                    </select>
+                  </label>
+
+                  <label>
+                    Special attention
+                    <input
+                      id="special_attention"
+                      name="special_attention"
+                      placeholder="Optional, e.g. Why users may drop off here"
+                    />
+                  </label>
+                </div>
+              </div>
+            </details>
           </div>
 
           <button id="submit-button" type="submit">Generate audit report</button>
@@ -431,6 +530,12 @@
           raw_text: document.getElementById("raw_text").value.trim() || null,
           business_context:
             document.getElementById("business_context").value.trim() || null,
+          focus_page_url:
+            document.getElementById("focus_page_url").value.trim() || null,
+          focus_page_label:
+            document.getElementById("focus_page_label").value.trim() || null,
+          special_attention:
+            document.getElementById("special_attention").value.trim() || null,
         };
 
         if (!payload.url && !payload.raw_text) {

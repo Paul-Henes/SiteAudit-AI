@@ -13,8 +13,8 @@
         --line: rgba(15, 23, 42, 0.08);
         --text: #111827;
         --muted: #6b7280;
-        --accent: #2563eb;
-        --accent-soft: rgba(37, 99, 235, 0.08);
+        --accent: #111827;
+        --accent-soft: #f3f4f6;
         --green: #16a34a;
         --amber: #d97706;
         --red: #dc2626;
@@ -31,7 +31,7 @@
         font-family: "Manrope", "Inter", "Segoe UI", sans-serif;
         color: var(--text);
         background:
-          radial-gradient(circle at top left, rgba(37, 99, 235, 0.06), transparent 22%),
+          radial-gradient(circle at top left, rgba(17, 24, 39, 0.04), transparent 20%),
           linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
       }
 
@@ -57,10 +57,16 @@
         gap: 18px;
       }
 
-      .hero-top {
+      .hero-top,
+      .score-head,
+      .issue-header,
+      .win-header,
+      .finding-head,
+      .evidence-head,
+      .heat-head {
         display: flex;
         justify-content: space-between;
-        gap: 16px;
+        gap: 12px;
         align-items: flex-start;
         flex-wrap: wrap;
       }
@@ -83,6 +89,7 @@
         text-decoration: none;
         font-weight: 700;
         border: 1px solid transparent;
+        cursor: pointer;
       }
 
       .nav-link {
@@ -94,11 +101,10 @@
       .action.primary {
         color: white;
         background: var(--accent);
-        box-shadow: 0 10px 20px rgba(37, 99, 235, 0.14);
       }
 
       .action.secondary {
-        color: var(--accent);
+        color: var(--text);
         background: var(--accent-soft);
       }
 
@@ -109,32 +115,22 @@
         letter-spacing: -0.04em;
       }
 
-      .summary {
-        margin: 0;
-        max-width: 82ch;
-        color: var(--muted);
-        line-height: 1.75;
-      }
-
+      .summary,
       .meta,
       .rationale,
       .issue p,
       .win p,
       .heat-copy,
+      .finding-copy,
+      .evidence-copy,
       .empty,
       .loading,
       .subtext {
         color: var(--muted);
-        line-height: 1.62;
+        line-height: 1.68;
       }
 
-      .meta-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 8px 16px;
-        margin-top: 14px;
-      }
-
+      .meta-grid,
       .stat-grid,
       .grid,
       .heatmap-grid {
@@ -142,12 +138,17 @@
         gap: 14px;
       }
 
+      .meta-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        margin-top: 14px;
+      }
+
       .stat-grid {
         grid-template-columns: repeat(4, minmax(0, 1fr));
       }
 
       .grid {
-        grid-template-columns: 1.1fr 0.9fr;
+        grid-template-columns: 1fr 1fr;
       }
 
       .stat-card,
@@ -178,30 +179,34 @@
 
       .scores,
       .issues,
-      .wins {
+      .wins,
+      .findings,
+      .evidence-list {
         display: grid;
         gap: 12px;
+      }
+
+      .focus-list {
+        margin: 14px 0 0;
+        padding-left: 18px;
+        color: var(--muted);
+        line-height: 1.62;
+      }
+
+      .focus-list li + li {
+        margin-top: 8px;
       }
 
       .score-row,
       .issue,
       .win,
-      .heat-card {
+      .heat-card,
+      .finding,
+      .evidence-item {
         padding: 16px;
         border-radius: 16px;
         border: 1px solid var(--line);
         background: var(--panel-soft);
-      }
-
-      .score-head,
-      .issue-header,
-      .win-header,
-      .heat-head {
-        display: flex;
-        justify-content: space-between;
-        gap: 10px;
-        align-items: center;
-        flex-wrap: wrap;
       }
 
       .score-track {
@@ -218,7 +223,8 @@
         background: linear-gradient(90deg, #f87171, #f59e0b, #22c55e);
       }
 
-      .badge {
+      .badge,
+      .band {
         display: inline-flex;
         padding: 6px 10px;
         border-radius: 999px;
@@ -227,17 +233,20 @@
         letter-spacing: 0.08em;
       }
 
-      .badge.HIGH {
+      .badge.HIGH,
+      .band.bad {
         color: var(--red);
         background: rgba(220, 38, 38, 0.08);
       }
 
-      .badge.MED {
+      .badge.MED,
+      .band.warn {
         color: var(--amber);
         background: rgba(217, 119, 6, 0.09);
       }
 
-      .badge.LOW {
+      .badge.LOW,
+      .band.good {
         color: var(--green);
         background: rgba(22, 163, 74, 0.08);
       }
@@ -246,29 +255,11 @@
         grid-template-columns: repeat(3, minmax(0, 1fr));
       }
 
-      .band {
-        display: inline-flex;
+      .excerpt {
+        display: inline-block;
         margin-top: 10px;
-        padding: 6px 10px;
-        border-radius: 999px;
-        font-size: 0.75rem;
-        font-weight: 700;
-        letter-spacing: 0.08em;
-      }
-
-      .band.good {
-        color: var(--green);
-        background: rgba(22, 163, 74, 0.08);
-      }
-
-      .band.warn {
-        color: var(--amber);
-        background: rgba(217, 119, 6, 0.09);
-      }
-
-      .band.bad {
-        color: var(--red);
-        background: rgba(220, 38, 38, 0.08);
+        font-size: 0.95rem;
+        color: #374151;
       }
 
       .empty,
@@ -292,7 +283,9 @@
         .score-row,
         .issue,
         .win,
-        .heat-card {
+        .heat-card,
+        .finding,
+        .evidence-item {
           box-shadow: none;
           border-color: #d5dbe5;
           background: white !important;
@@ -331,6 +324,23 @@
       </section>
 
       <section id="stats" class="stat-grid"></section>
+
+      <section class="grid">
+        <article class="section">
+          <h2>Evidence highlights</h2>
+          <div id="evidence" class="evidence-list"></div>
+        </article>
+
+        <article class="section">
+          <h2>Visual findings</h2>
+          <div id="visual-findings" class="findings"></div>
+        </article>
+      </section>
+
+      <section id="special-focus-section" class="section" style="display: none;">
+        <h2>Special attention area</h2>
+        <div id="special-focus-content"></div>
+      </section>
 
       <section class="grid">
         <article class="section">
@@ -398,10 +408,6 @@
         };
       }
 
-      function exportPdf() {
-        window.print();
-      }
-
       async function loadReport() {
         const reportId = window.location.pathname.split("/").pop();
         const hero = document.getElementById("hero");
@@ -410,7 +416,11 @@
         const scoresEl = document.getElementById("scores");
         const issuesEl = document.getElementById("issues");
         const winsEl = document.getElementById("wins");
+        const evidenceEl = document.getElementById("evidence");
+        const findingsEl = document.getElementById("visual-findings");
         const positioningEl = document.getElementById("positioning");
+        const specialFocusSectionEl = document.getElementById("special-focus-section");
+        const specialFocusContentEl = document.getElementById("special-focus-content");
 
         try {
           const response = await fetch(`/api/report/${reportId}`);
@@ -425,6 +435,9 @@
           const report = data.report;
           const source = data.source.source_url || "Direct text input";
           const createdAt = new Date(data.created_at).toLocaleString();
+          const focusPageLabel = data.request.focus_page_label || "Focus page";
+          const focusPageUrl = data.request.focus_page_url || "Not provided";
+          const specialAttention = data.request.special_attention || "Not provided";
           const scoreValues = Object.values(report.scores).map((item) => Number(item.score));
           const weakestScore = Math.min(...scoreValues);
           const strongestScore = Math.max(...scoreValues);
@@ -443,14 +456,40 @@
                   <div><strong>Created:</strong> ${createdAt}</div>
                   <div><strong>Input type:</strong> ${data.request.url ? "Website URL" : "Raw text"}</div>
                   <div><strong>Business context:</strong> ${data.request.business_context || "Not provided"}</div>
+                  <div><strong>${focusPageLabel}:</strong> ${focusPageUrl}</div>
+                  <div><strong>Special attention:</strong> ${specialAttention}</div>
                 </div>
               </div>
               <div class="hero-actions">
-                <button class="action primary" type="button" onclick="exportPdf()">Export PDF</button>
-                <a class="action secondary" href="/dashboard">Back to overview</a>
+                <a class="action primary" href="/api/report/${reportId}/pdf">Download PDF</a>
+                <button class="action secondary" type="button" onclick="window.print()">Print view</button>
               </div>
             </div>
           `;
+
+          if (report.special_focus) {
+            specialFocusSectionEl.style.display = "block";
+            specialFocusContentEl.innerHTML = `
+              <article class="finding">
+                <div class="finding-head">
+                  <strong>${report.special_focus.target_page}</strong>
+                  <span class="band warn">${report.special_focus.attention_area}</span>
+                </div>
+                <p class="summary" style="margin-top: 14px;">${report.special_focus.assessment}</p>
+                <h3 style="margin: 20px 0 10px; font-size: 1rem;">Where the friction is</h3>
+                <ul class="focus-list">
+                  ${report.special_focus.friction_points.map((item) => `<li>${item}</li>`).join("")}
+                </ul>
+                <h3 style="margin: 20px 0 10px; font-size: 1rem;">What to improve</h3>
+                <ul class="focus-list">
+                  ${report.special_focus.recommended_improvements.map((item) => `<li>${item}</li>`).join("")}
+                </ul>
+              </article>
+            `;
+          } else {
+            specialFocusSectionEl.style.display = "none";
+            specialFocusContentEl.innerHTML = "";
+          }
 
           statsEl.innerHTML = `
             <article class="stat-card">
@@ -464,16 +503,41 @@
               <div class="subtext">Priority problems requiring attention.</div>
             </article>
             <article class="stat-card">
-              <span class="label">Strongest area</span>
-              <span class="value">${formatScore(strongestScore)}</span>
-              <div class="subtext">Highest-scoring dimension in the current report.</div>
+              <span class="label">Evidence points</span>
+              <span class="value">${report.evidence.length}</span>
+              <div class="subtext">Quoted proof items supporting the audit conclusions.</div>
             </article>
             <article class="stat-card">
-              <span class="label">Weakest area</span>
-              <span class="value">${formatScore(weakestScore)}</span>
-              <div class="subtext">Most urgent dimension to improve based on score depth.</div>
+              <span class="label">Visual findings</span>
+              <span class="value">${report.visual_findings.length}</span>
+              <div class="subtext">Layout and hierarchy findings from screenshot review.</div>
             </article>
           `;
+
+          evidenceEl.innerHTML = report.evidence.length
+            ? report.evidence.map((item) => `
+                <article class="evidence-item">
+                  <div class="evidence-head">
+                    <strong>${item.source}</strong>
+                  </div>
+                  <span class="excerpt">“${item.excerpt}”</span>
+                  <p class="evidence-copy" style="margin-top: 10px;">${item.why_it_matters}</p>
+                </article>
+              `).join("")
+            : `<div class="empty">No evidence items were returned in this audit.</div>`;
+
+          findingsEl.innerHTML = report.visual_findings.length
+            ? report.visual_findings.map((item) => `
+                <article class="finding">
+                  <div class="finding-head">
+                    <strong>${item.area}</strong>
+                  </div>
+                  <p class="finding-copy">${item.observation}</p>
+                  <p class="finding-copy"><strong>Impact:</strong> ${item.impact}</p>
+                  <p class="finding-copy"><strong>Recommendation:</strong> ${item.recommendation}</p>
+                </article>
+              `).join("")
+            : `<div class="empty">No screenshot-based visual findings were returned in this audit.</div>`;
 
           heatmapEl.innerHTML = Object.entries(report.scores)
             .map(([key, item]) => {
@@ -535,10 +599,14 @@
         } catch (error) {
           hero.innerHTML = `<div class="empty">${error.message || "Unable to load report."}</div>`;
           statsEl.innerHTML = "";
+          specialFocusSectionEl.style.display = "none";
+          specialFocusContentEl.innerHTML = "";
           heatmapEl.innerHTML = "";
           scoresEl.innerHTML = "";
           issuesEl.innerHTML = "";
           winsEl.innerHTML = "";
+          evidenceEl.innerHTML = "";
+          findingsEl.innerHTML = "";
           positioningEl.textContent = "";
         }
       }
@@ -546,4 +614,4 @@
       loadReport();
     </script>
   </body>
-  </html>
+</html>

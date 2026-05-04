@@ -3,7 +3,8 @@
 
 SiteAudit AI is a website audit dashboard that turns URLs or pasted copy
 into structured, consulting-grade reports with scored dimensions,
-critical issues, quick wins, heatmaps, and PDF-ready output.
+critical issues, quick wins, evidence highlights, visual findings,
+heatmaps, and downloadable PDF output.
 
 Built for founders, consultants, and growth teams who want sharper
 website analysis without the usual vague AI feedback loop.
@@ -15,7 +16,11 @@ website analysis without the usual vague AI feedback loop.
 - Scrapes and parses website content
 - Runs it through a structured LLM analysis pipeline
 - Returns scored dimensions, critical issues, quick wins,
-  and an executive summary
+  evidence highlights, visual findings, and an executive summary
+- Supports a focus page and special attention request for deeper,
+  more targeted audits on critical conversion pages
+- Persists audits in SQLite and supports dashboard filtering and
+  domain-level comparison across multiple audit runs
 
 <img width="405" height="637" alt="Screenshot 2026-05-04 at 12 22 27" src="https://github.com/user-attachments/assets/2537e94d-50ac-48de-a852-2b7081c0f7e4" />
 
@@ -33,6 +38,7 @@ FastAPI · Anthropic/OpenAI API · BeautifulSoup · Vanilla JS
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
+playwright install chromium
 cp .env.example .env
 uvicorn backend.main:app --reload
 ```
@@ -60,8 +66,12 @@ For internal or local testing, the audit form also supports an optional temporar
 
 ## API
 - `POST /analyze` accepts either `url` or `raw_text`, plus optional `business_context`
+- `POST /analyze` also supports `focus_page_url`, `focus_page_label`, and `special_attention`
 - `GET /api/report/{id}` returns the stored JSON report
+- `GET /api/report/{id}/pdf` downloads a formatted PDF report
 - `GET /report/{id}` renders the report UI
+- `GET /api/reports` supports dashboard filters such as `q`, `provider`, `min_score`, `max_score`, `focus_label`, and `domain`
+- `GET /api/reports/compare?domain=example.com` returns a domain history comparison
 
 ## Notes
 - Anthropic support keeps the exact model specified in the brief by default: `claude-sonnet-4-20250514`
@@ -70,3 +80,5 @@ For internal or local testing, the audit form also supports an optional temporar
 - Scraped body text is truncated to 3000 characters before prompt assembly
 - Reports are now persisted in SQLite so dashboard history survives app restarts
 - The default database path is `data/siteaudit.db` and can be overridden with `SITEAUDIT_DB_PATH`
+- URL audits now attempt a best-effort visual screenshot pass using Playwright so the model can assess hierarchy, CTA prominence, and layout clarity
+- PDF export is generated server-side so the downloaded file matches the stored audit content rather than relying on browser print output

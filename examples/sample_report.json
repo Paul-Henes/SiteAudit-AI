@@ -27,6 +27,32 @@
       "rationale": "Core metadata is present, but the page lacks stronger keyword framing and heading support."
     }
   },
+  "evidence": [
+    {
+      "source": "Hero headline",
+      "excerpt": "Automate onboarding and compliance workflows",
+      "why_it_matters": "The category is understandable, but the promise still sounds broad enough to fit many adjacent SaaS tools."
+    },
+    {
+      "source": "Primary CTA",
+      "excerpt": "Learn More",
+      "why_it_matters": "The CTA is visible but too passive for a visitor who is already evaluating whether to move forward."
+    }
+  ],
+  "visual_findings": [
+    {
+      "area": "Hero hierarchy",
+      "observation": "The top section introduces the product quickly, but the headline, supporting copy, and surrounding elements compete too evenly for attention.",
+      "impact": "Visitors need to work harder than they should to identify the core promise and next step.",
+      "recommendation": "Strengthen the headline as the clear visual anchor and reduce competing emphasis around it."
+    },
+    {
+      "area": "Trust presentation",
+      "observation": "Proof elements do not appear visually early enough to support buyer confidence during the first scan.",
+      "impact": "The experience feels more generic and less commercially decisive than it needs to.",
+      "recommendation": "Bring logos, testimonials, or a compact proof bar higher into the layout."
+    }
+  ],
   "critical_issues": [
     {
       "title": "No differentiated value proposition",
@@ -58,5 +84,18 @@
       "effort": "LOW"
     }
   ],
-  "competitive_positioning_note": "The current presentation places the business in a familiar SaaS middle ground: competent enough to be considered, but not yet sharp enough to feel meaningfully ahead of category alternatives. Competitors with stronger proof, tighter audience language, or clearer next-step framing will likely feel more decisive to the same visitor."
+  "competitive_positioning_note": "The current presentation places the business in a familiar SaaS middle ground: competent enough to be considered, but not yet sharp enough to feel meaningfully ahead of category alternatives. Competitors with stronger proof, tighter audience language, or clearer next-step framing will likely feel more decisive to the same visitor.",
+  "special_focus": {
+    "target_page": "Pricing page",
+    "attention_area": "Plan clarity and conversion friction",
+    "assessment": "The pricing page contains enough information to compare options, but it asks the visitor to work too hard to understand which plan fits them and why they should act now.",
+    "friction_points": [
+      "The differences between plans are visible but not framed around audience fit or purchase intent.",
+      "The page lacks a stronger confidence-building reason to choose a plan immediately."
+    ],
+    "recommended_improvements": [
+      "Add clear audience labels or use-case framing for each plan.",
+      "Introduce a stronger CTA block with reassurance around what happens after sign-up."
+    ]
+  }
 }

@@ -53,15 +53,45 @@ class QuickWin(BaseModel):
     effort: Effort
 
 
+class EvidenceItem(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    source: str = Field(..., min_length=1)
+    excerpt: str = Field(..., min_length=1)
+    why_it_matters: str = Field(..., min_length=1)
+
+
+class VisualFinding(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    area: str = Field(..., min_length=1)
+    observation: str = Field(..., min_length=1)
+    impact: str = Field(..., min_length=1)
+    recommendation: str = Field(..., min_length=1)
+
+
+class SpecialFocus(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    target_page: str = Field(..., min_length=1)
+    attention_area: str = Field(..., min_length=1)
+    assessment: str = Field(..., min_length=1)
+    friction_points: list[str] = Field(..., min_length=1)
+    recommended_improvements: list[str] = Field(..., min_length=1)
+
+
 class AuditReport(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     executive_summary: str = Field(..., min_length=1)
     overall_score: float = Field(..., ge=1, le=10)
     scores: AuditScores
+    evidence: list[EvidenceItem] = Field(default_factory=list)
+    visual_findings: list[VisualFinding] = Field(default_factory=list)
     critical_issues: list[CriticalIssue]
     quick_wins: list[QuickWin]
     competitive_positioning_note: str = Field(..., min_length=1)
+    special_focus: Optional[SpecialFocus] = None
 
 
 class AnalyzeRequest(BaseModel):
@@ -70,6 +100,9 @@ class AnalyzeRequest(BaseModel):
     url: Optional[str] = None
     raw_text: Optional[str] = None
     business_context: Optional[str] = None
+    focus_page_url: Optional[str] = None
+    focus_page_label: Optional[str] = None
+    special_attention: Optional[str] = None
     llm_provider: Optional[str] = None
     model: Optional[str] = None
     api_key: Optional[str] = Field(default=None, exclude=True, repr=False)
