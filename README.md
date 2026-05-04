@@ -1,9 +1,12 @@
 # SiteAudit AI
 > Paste a URL. Get a consulting report in seconds.
 
-SiteAudit AI analyzes any website and returns structured,
-decision-ready insights — the kind a senior consultant would
-charge hours to produce.
+SiteAudit AI is a website audit dashboard that turns URLs or pasted copy
+into structured, consulting-grade reports with scored dimensions,
+critical issues, quick wins, heatmaps, and PDF-ready output.
+
+Built for founders, consultants, and growth teams who want sharper
+website analysis without the usual vague AI feedback loop.
 
 ## What it does
 - Scrapes and parses website content
