@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SiteAudit AI Dashboard</title>
+    <style>
+      :root {
+        --bg: #fbfbfa;
+        --bg-soft: #f4f5f2;
+        --text: #111827;
+        --muted: #6b7280;
+        --line: #e5e7eb;
+        --line-strong: #d9dde4;
+        --button: #111827;
+        --button-text: #ffffff;
+        --surface: #ffffff;
+        --radius: 16px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Inter", "Manrope", "Geist", "Segoe UI", sans-serif;
+        color: var(--text);
+        background: linear-gradient(180deg, var(--bg) 0%, var(--bg-soft) 100%);
+      }
+
+      .page {
+        width: min(1180px, calc(100% - 40px));
+        margin: 24px auto 56px;
+        display: grid;
+        gap: 40px;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 18px 0 22px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .brand {
+        display: grid;
+        gap: 4px;
+      }
+
+      .eyebrow {
+        font-size: 0.72rem;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .brand strong {
+        font-size: 0.98rem;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+      }
+
+      .nav-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 11px 16px;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+        background: white;
+        color: var(--text);
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .button.primary {
+        background: var(--button);
+        color: var(--button-text);
+        border-color: var(--button);
+      }
+
+      .hero {
+        display: grid;
+        gap: 16px;
+        justify-items: center;
+        text-align: center;
+        padding-top: 16px;
+      }
+
+      h1 {
+        margin: 0;
+        max-width: 16ch;
+        font-size: clamp(3rem, 6vw, 5.6rem);
+        line-height: 0.92;
+        letter-spacing: -0.06em;
+        font-weight: 700;
+      }
+
+      .summary {
+        margin: 0;
+        max-width: 62ch;
+        color: var(--muted);
+        line-height: 1.75;
+        font-size: 1.02rem;
+      }
+
+      .metrics {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 24px;
+        padding: 6px 0 0;
+        border-top: 1px solid var(--line);
+      }
+
+      .metric {
+        padding-top: 24px;
+      }
+
+      .metric-value {
+        display: block;
+        font-size: clamp(2rem, 3vw, 3rem);
+        line-height: 1;
+        letter-spacing: -0.05em;
+        font-weight: 700;
+      }
+
+      .metric-label {
+        display: block;
+        margin-top: 10px;
+        font-size: 0.82rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .metric-copy {
+        margin-top: 10px;
+        color: var(--muted);
+        line-height: 1.6;
+        font-size: 0.95rem;
+      }
+
+      .section {
+        display: grid;
+        gap: 18px;
+      }
+
+      .section-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        align-items: end;
+        flex-wrap: wrap;
+        padding-bottom: 16px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .section-head h2 {
+        margin: 0;
+        font-size: 1.55rem;
+        line-height: 1;
+        letter-spacing: -0.03em;
+      }
+
+      .section-head p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.65;
+      }
+
+      .insights {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 24px;
+      }
+
+      .insight {
+        padding-top: 6px;
+      }
+
+      .insight-value {
+        display: block;
+        font-size: 2rem;
+        line-height: 1;
+        letter-spacing: -0.04em;
+        font-weight: 700;
+      }
+
+      .insight-label {
+        display: block;
+        margin-top: 10px;
+        color: var(--muted);
+        font-size: 0.82rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .insight-copy {
+        margin-top: 10px;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+        background: var(--surface);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      thead th {
+        text-align: left;
+        padding: 0 0 14px;
+        font-size: 0.78rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+        font-weight: 600;
+      }
+
+      tbody td {
+        padding: 18px 0;
+        border-top: 1px solid var(--line);
+        vertical-align: top;
+      }
+
+      .audit-title {
+        display: grid;
+        gap: 6px;
+        min-width: 220px;
+      }
+
+      .audit-title strong {
+        font-size: 1rem;
+        letter-spacing: -0.01em;
+      }
+
+      .audit-meta,
+      .audit-summary,
+      .audit-detail {
+        color: var(--muted);
+        line-height: 1.65;
+        font-size: 0.95rem;
+      }
+
+      .score {
+        display: inline-flex;
+        flex-direction: column;
+        gap: 8px;
+        min-width: 82px;
+      }
+
+      .score strong {
+        font-size: 1.6rem;
+        line-height: 1;
+        letter-spacing: -0.04em;
+      }
+
+      .score-bar {
+        width: 100%;
+        height: 5px;
+        border-radius: 999px;
+        background: #eceff3;
+        overflow: hidden;
+      }
+
+      .score-bar > span {
+        display: block;
+        height: 100%;
+        border-radius: 999px;
+        background: #111827;
+      }
+
+      .tags {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .tag {
+        display: inline-flex;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: #f5f6f8;
+        color: #4b5563;
+        border: 1px solid #eef0f3;
+        font-size: 0.82rem;
+        font-weight: 600;
+      }
+
+      .open-link {
+        display: inline-flex;
+        align-items: center;
+        color: var(--text);
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .empty,
+      .loading {
+        padding: 28px 0;
+        color: var(--muted);
+        text-align: center;
+      }
+
+      @media (max-width: 960px) {
+        .metrics,
+        .insights {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      @media (max-width: 700px) {
+        .page {
+          width: calc(100% - 24px);
+          gap: 32px;
+        }
+
+        .topbar {
+          padding-bottom: 18px;
+        }
+
+        .metrics,
+        .insights {
+          grid-template-columns: 1fr;
+          gap: 18px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar">
+        <div class="brand">
+          <span class="eyebrow">SiteAudit AI</span>
+          <strong>Audit overview</strong>
+        </div>
+        <nav class="nav-actions">
+          <a class="button" href="/health">API health</a>
+          <a class="button primary" href="/">Run new audit</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <span class="eyebrow">Audit overview</span>
+        <h1>Audit overview<br />across the workspace.</h1>
+        <p class="summary">
+          A quieter dashboard surface for reviewing quality, recurring friction, and the newest audit runs
+          with more of an editorial SaaS feel than a typical AI control panel.
+        </p>
+      </section>
+
+      <section class="metrics" aria-label="Portfolio metrics">
+        <article class="metric">
+          <span id="metric-count" class="metric-value">0</span>
+          <span class="metric-label">Total reports</span>
+          <div class="metric-copy">Saved audits currently visible in this workspace session.</div>
+        </article>
+        <article class="metric">
+          <span id="metric-average" class="metric-value">0.0</span>
+          <span class="metric-label">Average score</span>
+          <div class="metric-copy">Portfolio-wide benchmark across completed audits.</div>
+        </article>
+        <article class="metric">
+          <span id="metric-issues" class="metric-value">0</span>
+          <span class="metric-label">Critical issues</span>
+          <div class="metric-copy">Total priority findings surfaced across reports.</div>
+        </article>
+        <article class="metric">
+          <span id="metric-wins" class="metric-value">0</span>
+          <span class="metric-label">Quick wins</span>
+          <div class="metric-copy">Actionable improvements currently identified.</div>
+        </article>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <div>
+            <h2>Signals</h2>
+            <p>Small portfolio-level reads pulled from the current audit set.</p>
+          </div>
+        </div>
+        <div class="insights">
+          <article class="insight">
+            <span id="insight-best" class="insight-value">-</span>
+            <span class="insight-label">Strongest audit</span>
+            <div id="insight-best-copy" class="insight-copy">No reports loaded yet.</div>
+          </article>
+          <article class="insight">
+            <span id="insight-worst" class="insight-value">-</span>
+            <span class="insight-label">Weakest audit</span>
+            <div id="insight-worst-copy" class="insight-copy">No reports loaded yet.</div>
+          </article>
+          <article class="insight">
+            <span id="insight-provider" class="insight-value">-</span>
+            <span class="insight-label">Most used provider</span>
+            <div class="insight-copy">Distribution across saved audit runs.</div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <div>
+            <h2>Recent audits</h2>
+            <p>Newest first. Open any row to move from overview into the detailed report surface.</p>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Audit</th>
+                <th>Score</th>
+                <th>Model</th>
+                <th>Summary</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="reports-body">
+              <tr>
+                <td class="loading" colspan="5">Loading dashboard…</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      function formatDate(value) {
+        return new Date(value).toLocaleString();
+      }
+
+      function formatScore(value) {
+        return Number(value).toFixed(1);
+      }
+
+      function topProvider(reports) {
+        const counts = reports.reduce((acc, report) => {
+          const provider = report.provider || "unknown";
+          acc[provider] = (acc[provider] || 0) + 1;
+          return acc;
+        }, {});
+
+        return Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0] || "-";
+      }
+
+      function renderRows(reports) {
+        const body = document.getElementById("reports-body");
+
+        if (!reports.length) {
+          body.innerHTML = `
+            <tr>
+              <td class="empty" colspan="5">
+                No audits yet. Run your first audit from the home screen to populate the dashboard.
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        body.innerHTML = reports.map((report) => `
+          <tr>
+            <td>
+              <div class="audit-title">
+                <strong>${report.source_title || "Untitled audit source"}</strong>
+                <div class="audit-detail">${report.source_url || "Direct text input"}</div>
+                <div class="audit-meta">
+                  ${formatDate(report.created_at)} · ${report.input_type === "url" ? "Website URL" : "Raw text"}
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="score">
+                <strong>${formatScore(report.overall_score)}</strong>
+                <div class="score-bar">
+                  <span style="width: ${Math.max(0, Math.min(100, Number(report.overall_score) * 10))}%"></span>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="audit-detail">
+                <div><strong>${report.provider || "Unknown"}</strong></div>
+                <div>${report.model || "Default model"}</div>
+              </div>
+            </td>
+            <td>
+              <div class="audit-summary">${report.executive_summary}</div>
+              <div class="tags" style="margin-top: 12px;">
+                <span class="tag">${report.critical_issues_count} critical issues</span>
+                <span class="tag">${report.quick_wins_count} quick wins</span>
+                <span class="tag">${report.business_context || "No business context"}</span>
+              </div>
+            </td>
+            <td>
+              <a class="open-link" href="${report.report_url}">Open report</a>
+            </td>
+          </tr>
+        `).join("");
+      }
+
+      async function loadDashboard() {
+        const countEl = document.getElementById("metric-count");
+        const avgEl = document.getElementById("metric-average");
+        const issuesEl = document.getElementById("metric-issues");
+        const winsEl = document.getElementById("metric-wins");
+        const bestEl = document.getElementById("insight-best");
+        const bestCopyEl = document.getElementById("insight-best-copy");
+        const worstEl = document.getElementById("insight-worst");
+        const worstCopyEl = document.getElementById("insight-worst-copy");
+        const providerEl = document.getElementById("insight-provider");
+
+        try {
+          const response = await fetch("/api/reports");
+          const data = await response.json();
+          if (!response.ok) {
+            throw new Error(data.detail || "Unable to load dashboard.");
+          }
+
+          const reports = data.reports || [];
+          countEl.textContent = String(reports.length);
+
+          const totalScore = reports.reduce((sum, report) => sum + Number(report.overall_score), 0);
+          const totalIssues = reports.reduce((sum, report) => sum + Number(report.critical_issues_count), 0);
+          const totalWins = reports.reduce((sum, report) => sum + Number(report.quick_wins_count), 0);
+
+          avgEl.textContent = reports.length ? formatScore(totalScore / reports.length) : "0.0";
+          issuesEl.textContent = String(totalIssues);
+          winsEl.textContent = String(totalWins);
+          providerEl.textContent = reports.length ? topProvider(reports) : "-";
+
+          if (reports.length) {
+            const sortedByScore = [...reports].sort((a, b) => Number(b.overall_score) - Number(a.overall_score));
+            const best = sortedByScore[0];
+            const worst = sortedByScore[sortedByScore.length - 1];
+
+            bestEl.textContent = formatScore(best.overall_score);
+            bestCopyEl.textContent = best.source_url || best.source_title || "Direct text input";
+            worstEl.textContent = formatScore(worst.overall_score);
+            worstCopyEl.textContent = worst.source_url || worst.source_title || "Direct text input";
+          }
+
+          renderRows(reports);
+        } catch (error) {
+          document.getElementById("reports-body").innerHTML = `
+            <tr>
+              <td class="empty" colspan="5">${error.message || "Unable to load dashboard."}</td>
+            </tr>
+          `;
+        }
+      }
+
+      loadDashboard();
+    </script>
+  </body>
+  </html>

@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SiteAudit AI Report</title>
+    <style>
+      :root {
+        --bg: #f6f8fb;
+        --bg-2: #eef2f7;
+        --panel: rgba(255, 255, 255, 0.96);
+        --panel-soft: rgba(250, 252, 255, 0.96);
+        --line: rgba(15, 23, 42, 0.08);
+        --text: #111827;
+        --muted: #6b7280;
+        --accent: #2563eb;
+        --accent-soft: rgba(37, 99, 235, 0.08);
+        --green: #16a34a;
+        --amber: #d97706;
+        --red: #dc2626;
+        --shadow: 0 18px 44px rgba(15, 23, 42, 0.07);
+        --radius: 20px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Manrope", "Inter", "Segoe UI", sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at top left, rgba(37, 99, 235, 0.06), transparent 22%),
+          linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+      }
+
+      .page {
+        width: min(1280px, calc(100% - 32px));
+        margin: 24px auto 40px;
+        display: grid;
+        gap: 18px;
+      }
+
+      .card,
+      .section,
+      .stat-card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+      }
+
+      .hero {
+        padding: 28px;
+        display: grid;
+        gap: 18px;
+      }
+
+      .hero-top {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        align-items: flex-start;
+        flex-wrap: wrap;
+      }
+
+      .nav-links,
+      .hero-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .nav-link,
+      .action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px 14px;
+        border-radius: 14px;
+        text-decoration: none;
+        font-weight: 700;
+        border: 1px solid transparent;
+      }
+
+      .nav-link {
+        color: var(--text);
+        background: white;
+        border-color: var(--line);
+      }
+
+      .action.primary {
+        color: white;
+        background: var(--accent);
+        box-shadow: 0 10px 20px rgba(37, 99, 235, 0.14);
+      }
+
+      .action.secondary {
+        color: var(--accent);
+        background: var(--accent-soft);
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(2.2rem, 4vw, 3.8rem);
+        line-height: 0.96;
+        letter-spacing: -0.04em;
+      }
+
+      .summary {
+        margin: 0;
+        max-width: 82ch;
+        color: var(--muted);
+        line-height: 1.75;
+      }
+
+      .meta,
+      .rationale,
+      .issue p,
+      .win p,
+      .heat-copy,
+      .empty,
+      .loading,
+      .subtext {
+        color: var(--muted);
+        line-height: 1.62;
+      }
+
+      .meta-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px 16px;
+        margin-top: 14px;
+      }
+
+      .stat-grid,
+      .grid,
+      .heatmap-grid {
+        display: grid;
+        gap: 14px;
+      }
+
+      .stat-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .grid {
+        grid-template-columns: 1.1fr 0.9fr;
+      }
+
+      .stat-card,
+      .section {
+        padding: 20px;
+      }
+
+      .label {
+        color: var(--muted);
+        font-size: 0.74rem;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+      }
+
+      .value {
+        display: block;
+        margin-top: 10px;
+        font-size: 2rem;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+      }
+
+      .section h2 {
+        margin: 0 0 16px;
+        font-size: 1.2rem;
+        letter-spacing: -0.02em;
+      }
+
+      .scores,
+      .issues,
+      .wins {
+        display: grid;
+        gap: 12px;
+      }
+
+      .score-row,
+      .issue,
+      .win,
+      .heat-card {
+        padding: 16px;
+        border-radius: 16px;
+        border: 1px solid var(--line);
+        background: var(--panel-soft);
+      }
+
+      .score-head,
+      .issue-header,
+      .win-header,
+      .heat-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .score-track {
+        margin-top: 10px;
+        height: 8px;
+        border-radius: 999px;
+        background: #e8edf5;
+        overflow: hidden;
+      }
+
+      .score-fill {
+        height: 100%;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #f87171, #f59e0b, #22c55e);
+      }
+
+      .badge {
+        display: inline-flex;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 0.74rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+      }
+
+      .badge.HIGH {
+        color: var(--red);
+        background: rgba(220, 38, 38, 0.08);
+      }
+
+      .badge.MED {
+        color: var(--amber);
+        background: rgba(217, 119, 6, 0.09);
+      }
+
+      .badge.LOW {
+        color: var(--green);
+        background: rgba(22, 163, 74, 0.08);
+      }
+
+      .heatmap-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .band {
+        display: inline-flex;
+        margin-top: 10px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+      }
+
+      .band.good {
+        color: var(--green);
+        background: rgba(22, 163, 74, 0.08);
+      }
+
+      .band.warn {
+        color: var(--amber);
+        background: rgba(217, 119, 6, 0.09);
+      }
+
+      .band.bad {
+        color: var(--red);
+        background: rgba(220, 38, 38, 0.08);
+      }
+
+      .empty,
+      .loading {
+        padding: 24px;
+      }
+
+      @media print {
+        body {
+          background: white;
+        }
+
+        .page {
+          width: 100%;
+          margin: 0;
+        }
+
+        .card,
+        .stat-card,
+        .section,
+        .score-row,
+        .issue,
+        .win,
+        .heat-card {
+          box-shadow: none;
+          border-color: #d5dbe5;
+          background: white !important;
+        }
+
+        .nav-links,
+        .hero-actions {
+          display: none !important;
+        }
+      }
+
+      @media (max-width: 1100px) {
+        .stat-grid,
+        .heatmap-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 720px) {
+        .stat-grid,
+        .heatmap-grid,
+        .meta-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <section id="hero" class="card hero">
+        <div class="loading">Loading report…</div>
+      </section>
+
+      <section id="stats" class="stat-grid"></section>
+
+      <section class="grid">
+        <article class="section">
+          <h2>Audit heatmap</h2>
+          <div id="heatmap" class="heatmap-grid"></div>
+        </article>
+
+        <article class="section">
+          <h2>Competitive positioning note</h2>
+          <p id="positioning" class="summary"></p>
+        </article>
+      </section>
+
+      <section class="grid">
+        <article class="section">
+          <h2>Dimension scores</h2>
+          <div id="scores" class="scores"></div>
+        </article>
+
+        <article class="section">
+          <h2>Quick wins</h2>
+          <div id="wins" class="wins"></div>
+        </article>
+      </section>
+
+      <section class="section">
+        <h2>Critical issues</h2>
+        <div id="issues" class="issues"></div>
+      </section>
+    </main>
+
+    <script>
+      const scoreLabels = {
+        value_proposition: "Value proposition clarity",
+        messaging_tone: "Messaging and tone",
+        ux_structure: "UX and structure",
+        cta_effectiveness: "CTA effectiveness",
+        trust_signals: "Trust signals",
+        seo_readiness: "SEO readiness",
+      };
+
+      function formatScore(value) {
+        return Number(value).toFixed(1);
+      }
+
+      function scoreBand(score) {
+        if (score >= 7.5) {
+          return {
+            level: "Strong",
+            tone: "good",
+            summary: "This dimension is currently contributing positively to credibility and conversion flow."
+          };
+        }
+        if (score >= 5) {
+          return {
+            level: "Watch",
+            tone: "warn",
+            summary: "This dimension is acceptable but still leaves material room for improvement."
+          };
+        }
+        return {
+          level: "Critical",
+          tone: "bad",
+          summary: "This dimension is likely undermining clarity, trust, or conversion momentum."
+        };
+      }
+
+      function exportPdf() {
+        window.print();
+      }
+
+      async function loadReport() {
+        const reportId = window.location.pathname.split("/").pop();
+        const hero = document.getElementById("hero");
+        const statsEl = document.getElementById("stats");
+        const heatmapEl = document.getElementById("heatmap");
+        const scoresEl = document.getElementById("scores");
+        const issuesEl = document.getElementById("issues");
+        const winsEl = document.getElementById("wins");
+        const positioningEl = document.getElementById("positioning");
+
+        try {
+          const response = await fetch(`/api/report/${reportId}`);
+          const data = await response.json();
+          if (!response.ok) {
+            const detail = typeof data.detail === "string"
+              ? data.detail
+              : data.detail?.message || "Unable to load report.";
+            throw new Error(detail);
+          }
+
+          const report = data.report;
+          const source = data.source.source_url || "Direct text input";
+          const createdAt = new Date(data.created_at).toLocaleString();
+          const scoreValues = Object.values(report.scores).map((item) => Number(item.score));
+          const weakestScore = Math.min(...scoreValues);
+          const strongestScore = Math.max(...scoreValues);
+
+          hero.innerHTML = `
+            <div class="hero-top">
+              <div>
+                <div class="nav-links">
+                  <a class="nav-link" href="/">New audit</a>
+                  <a class="nav-link" href="/dashboard">Dashboard</a>
+                </div>
+                <h1>Audit report</h1>
+                <p class="summary">${report.executive_summary}</p>
+                <div class="meta-grid meta">
+                  <div><strong>Source:</strong> ${source}</div>
+                  <div><strong>Created:</strong> ${createdAt}</div>
+                  <div><strong>Input type:</strong> ${data.request.url ? "Website URL" : "Raw text"}</div>
+                  <div><strong>Business context:</strong> ${data.request.business_context || "Not provided"}</div>
+                </div>
+              </div>
+              <div class="hero-actions">
+                <button class="action primary" type="button" onclick="exportPdf()">Export PDF</button>
+                <a class="action secondary" href="/dashboard">Back to overview</a>
+              </div>
+            </div>
+          `;
+
+          statsEl.innerHTML = `
+            <article class="stat-card">
+              <span class="label">Overall score</span>
+              <span class="value">${formatScore(report.overall_score)}</span>
+              <div class="subtext">Weighted summary score for the current audit.</div>
+            </article>
+            <article class="stat-card">
+              <span class="label">Critical issues</span>
+              <span class="value">${report.critical_issues.length}</span>
+              <div class="subtext">Priority problems requiring attention.</div>
+            </article>
+            <article class="stat-card">
+              <span class="label">Strongest area</span>
+              <span class="value">${formatScore(strongestScore)}</span>
+              <div class="subtext">Highest-scoring dimension in the current report.</div>
+            </article>
+            <article class="stat-card">
+              <span class="label">Weakest area</span>
+              <span class="value">${formatScore(weakestScore)}</span>
+              <div class="subtext">Most urgent dimension to improve based on score depth.</div>
+            </article>
+          `;
+
+          heatmapEl.innerHTML = Object.entries(report.scores)
+            .map(([key, item]) => {
+              const band = scoreBand(Number(item.score));
+              return `
+                <article class="heat-card">
+                  <div class="heat-head">
+                    <strong>${scoreLabels[key] || key}</strong>
+                    <span class="band ${band.tone}">${band.level}</span>
+                  </div>
+                  <span class="value">${formatScore(item.score)}</span>
+                  <p class="heat-copy">${band.summary}</p>
+                </article>
+              `;
+            })
+            .join("");
+
+          scoresEl.innerHTML = Object.entries(report.scores)
+            .map(([key, item]) => `
+              <div class="score-row">
+                <div class="score-head">
+                  <strong>${scoreLabels[key] || key}</strong>
+                  <span>${formatScore(item.score)}/10</span>
+                </div>
+                <div class="score-track">
+                  <div class="score-fill" style="width: ${Math.max(0, Math.min(100, Number(item.score) * 10))}%"></div>
+                </div>
+                <div class="rationale">${item.rationale}</div>
+              </div>
+            `)
+            .join("");
+
+          positioningEl.textContent = report.competitive_positioning_note;
+
+          issuesEl.innerHTML = report.critical_issues.length
+            ? report.critical_issues.map((issue) => `
+                <article class="issue">
+                  <div class="issue-header">
+                    <strong>${issue.title}</strong>
+                    <span class="badge ${issue.severity}">${issue.severity}</span>
+                  </div>
+                  <p>${issue.description}</p>
+                  <p style="margin-top: 10px;"><strong>Recommendation:</strong> ${issue.recommendation}</p>
+                </article>
+              `).join("")
+            : `<div class="empty">No critical issues were returned in this audit.</div>`;
+
+          winsEl.innerHTML = report.quick_wins.length
+            ? report.quick_wins.map((win) => `
+                <article class="win">
+                  <div class="win-header">
+                    <strong>${win.action}</strong>
+                    <span class="badge ${win.effort}">${win.effort} effort</span>
+                  </div>
+                  <p><strong>Estimated impact:</strong> ${win.estimated_impact}</p>
+                </article>
+              `).join("")
+            : `<div class="empty">No quick wins were returned in this audit.</div>`;
+        } catch (error) {
+          hero.innerHTML = `<div class="empty">${error.message || "Unable to load report."}</div>`;
+          statsEl.innerHTML = "";
+          heatmapEl.innerHTML = "";
+          scoresEl.innerHTML = "";
+          issuesEl.innerHTML = "";
+          winsEl.innerHTML = "";
+          positioningEl.textContent = "";
+        }
+      }
+
+      loadReport();
+    </script>
+  </body>
+  </html>

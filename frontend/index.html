@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SiteAudit AI</title>
+    <style>
+      :root {
+        --bg: #f6f8fb;
+        --bg-2: #eef2f7;
+        --panel: rgba(255, 255, 255, 0.96);
+        --panel-soft: rgba(250, 252, 255, 0.96);
+        --line: rgba(15, 23, 42, 0.08);
+        --line-strong: rgba(15, 23, 42, 0.12);
+        --text: #111827;
+        --muted: #6b7280;
+        --accent: #2563eb;
+        --accent-soft: rgba(37, 99, 235, 0.08);
+        --shadow: 0 18px 44px rgba(15, 23, 42, 0.07);
+        --radius: 20px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Manrope", "Inter", "Segoe UI", sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at top left, rgba(37, 99, 235, 0.06), transparent 24%),
+          linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+      }
+
+      .page {
+        width: min(1180px, calc(100% - 32px));
+        margin: 24px auto 40px;
+        display: grid;
+        gap: 18px;
+      }
+
+      .hero,
+      .surface {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+      }
+
+      .hero {
+        padding: 30px;
+        display: grid;
+        gap: 18px;
+      }
+
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        align-items: start;
+        flex-wrap: wrap;
+      }
+
+      .eyebrow {
+        color: var(--muted);
+        font-size: 0.76rem;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 10px 0 12px;
+        font-size: clamp(2.5rem, 4vw, 4.1rem);
+        line-height: 0.95;
+        letter-spacing: -0.04em;
+        max-width: 12ch;
+      }
+
+      .hero-copy {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.74;
+        max-width: 70ch;
+      }
+
+      .actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .button-link,
+      button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 13px 16px;
+        border-radius: 14px;
+        border: 1px solid transparent;
+        font: inherit;
+        font-weight: 700;
+        text-decoration: none;
+        cursor: pointer;
+        transition: transform 120ms ease, box-shadow 120ms ease, opacity 120ms ease;
+      }
+
+      .button-link.primary,
+      button {
+        background: var(--accent);
+        color: white;
+        box-shadow: 0 10px 20px rgba(37, 99, 235, 0.14);
+      }
+
+      .button-link.secondary {
+        background: white;
+        color: var(--text);
+        border-color: var(--line);
+      }
+
+      .button-link:hover,
+      button:hover {
+        transform: translateY(-1px);
+      }
+
+      button:disabled {
+        cursor: wait;
+        opacity: 0.7;
+      }
+
+      .hero-grid,
+      .feature-grid,
+      .form-grid {
+        display: grid;
+        gap: 14px;
+      }
+
+      .hero-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .hero-stat,
+      .feature {
+        padding: 18px;
+        border-radius: 16px;
+        border: 1px solid var(--line);
+        background: var(--panel-soft);
+      }
+
+      .meta-label {
+        color: var(--muted);
+        font-size: 0.74rem;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+      }
+
+      .hero-stat .value {
+        display: block;
+        margin-top: 10px;
+        font-size: 1.7rem;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+      }
+
+      .surface {
+        padding: 26px;
+      }
+
+      .surface-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-bottom: 18px;
+      }
+
+      .surface-head h2,
+      .surface-head h3 {
+        margin: 0;
+        font-size: 1.22rem;
+        letter-spacing: -0.02em;
+      }
+
+      .helper,
+      .feature p,
+      .security-note {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.68;
+      }
+
+      form {
+        display: grid;
+        gap: 18px;
+      }
+
+      .form-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .full {
+        grid-column: 1 / -1;
+      }
+
+      label {
+        display: grid;
+        gap: 8px;
+        font-weight: 600;
+      }
+
+      input,
+      textarea,
+      select {
+        width: 100%;
+        border-radius: 14px;
+        border: 1px solid var(--line);
+        background: white;
+        color: var(--text);
+        padding: 14px 15px;
+        font: inherit;
+      }
+
+      input:focus,
+      textarea:focus,
+      select:focus {
+        outline: 2px solid rgba(37, 99, 235, 0.12);
+        border-color: rgba(37, 99, 235, 0.35);
+      }
+
+      textarea {
+        min-height: 128px;
+        resize: vertical;
+      }
+
+      .row {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        gap: 12px;
+        align-items: center;
+      }
+
+      .divider {
+        color: var(--muted);
+        font-size: 0.74rem;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      .status-line {
+        min-height: 24px;
+        color: var(--muted);
+      }
+
+      .error {
+        color: #b42318;
+      }
+
+      .security-note {
+        padding: 14px 16px;
+        border-radius: 14px;
+        border: 1px solid var(--line);
+        background: #fafbfc;
+      }
+
+      @media (max-width: 980px) {
+        .hero-grid,
+        .feature-grid,
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <section class="hero">
+        <div class="topbar">
+          <div>
+            <div class="eyebrow">SiteAudit AI</div>
+            <h1>Website audits in a cleaner working surface.</h1>
+            <p class="hero-copy">
+              Run a structured website audit, review the results in a compact report view,
+              and move into the dashboard without the interface feeling like a generic AI product.
+            </p>
+          </div>
+          <div class="actions">
+            <a class="button-link secondary" href="/dashboard">Open dashboard</a>
+            <a class="button-link primary" href="#audit-form">Run audit</a>
+          </div>
+        </div>
+
+        <div class="hero-grid">
+          <article class="hero-stat">
+            <span class="meta-label">Scoring model</span>
+            <span class="value">1-10</span>
+          </article>
+          <article class="hero-stat">
+            <span class="meta-label">Report style</span>
+            <span class="value">Structured</span>
+          </article>
+          <article class="hero-stat">
+            <span class="meta-label">Export</span>
+            <span class="value">PDF ready</span>
+          </article>
+          <article class="hero-stat">
+            <span class="meta-label">Use case</span>
+            <span class="value">Audit ops</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="surface">
+        <div class="surface-head">
+          <div>
+            <h2>Run an audit</h2>
+            <p class="helper">
+              Add a URL or paste raw copy, choose a provider if needed, and generate a report.
+            </p>
+          </div>
+        </div>
+
+        <form id="audit-form">
+          <div class="form-grid">
+            <label>
+              LLM provider
+              <select id="llm_provider" name="llm_provider">
+                <option value="">Use server default</option>
+                <option value="openai">OpenAI</option>
+                <option value="anthropic">Anthropic</option>
+              </select>
+            </label>
+
+            <label>
+              Model override
+              <input
+                id="model"
+                name="model"
+                placeholder="Optional, e.g. gpt-4.1 or claude-sonnet-4-20250514"
+              />
+            </label>
+
+            <label class="full">
+              Session API key
+              <input
+                id="api_key"
+                name="api_key"
+                type="password"
+                autocomplete="off"
+                placeholder="Optional temporary key for this audit run only"
+              />
+            </label>
+
+            <label class="full">
+              Website URL
+              <input id="url" name="url" placeholder="https://example.com" />
+            </label>
+
+            <div class="row full" aria-hidden="true">
+              <div style="height: 1px; background: var(--line-strong)"></div>
+              <span class="divider">or</span>
+              <div style="height: 1px; background: var(--line-strong)"></div>
+            </div>
+
+            <label class="full">
+              Raw text paste
+              <textarea
+                id="raw_text"
+                name="raw_text"
+                placeholder="Paste homepage copy, messaging, or a landing page draft"
+              ></textarea>
+            </label>
+
+            <label class="full">
+              Business context
+              <textarea
+                id="business_context"
+                name="business_context"
+                placeholder="We are a B2B SaaS selling to HR teams and want to improve demo conversion."
+              ></textarea>
+            </label>
+          </div>
+
+          <button id="submit-button" type="submit">Generate audit report</button>
+          <div id="status" class="status-line" role="status" aria-live="polite"></div>
+          <div class="security-note">
+            Session API key values are passed only for the current audit request. They are not written into saved reports and are not persisted by this frontend.
+          </div>
+        </form>
+      </section>
+
+      <section class="surface">
+        <div class="surface-head">
+          <div>
+            <h3>Report output</h3>
+            <p class="helper">What the generated audit is designed to show.</p>
+          </div>
+        </div>
+        <div class="feature-grid">
+          <article class="feature">
+            <strong>Executive summary</strong>
+            <p>Quick overall read, weighted score, and positioning note.</p>
+          </article>
+          <article class="feature">
+            <strong>Audit heatmap</strong>
+            <p>Dimension-level strength and friction visibility in the report view.</p>
+          </article>
+          <article class="feature">
+            <strong>Actionability</strong>
+            <p>Critical issues, quick wins, and a report layout ready to export as PDF.</p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const form = document.getElementById("audit-form");
+      const statusEl = document.getElementById("status");
+      const button = document.getElementById("submit-button");
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const payload = {
+          llm_provider: document.getElementById("llm_provider").value.trim() || null,
+          api_key: document.getElementById("api_key").value.trim() || null,
+          model: document.getElementById("model").value.trim() || null,
+          url: document.getElementById("url").value.trim() || null,
+          raw_text: document.getElementById("raw_text").value.trim() || null,
+          business_context:
+            document.getElementById("business_context").value.trim() || null,
+        };
+
+        if (!payload.url && !payload.raw_text) {
+          statusEl.textContent = "Add a URL or paste source text to continue.";
+          statusEl.className = "status-line error";
+          return;
+        }
+
+        button.disabled = true;
+        statusEl.textContent = "Scraping source and generating report…";
+        statusEl.className = "status-line";
+
+        try {
+          const response = await fetch("/analyze", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+
+          const data = await response.json();
+          if (!response.ok) {
+            const detail = typeof data.detail === "string"
+              ? data.detail
+              : data.detail?.message || "Analysis failed.";
+            throw new Error(detail);
+          }
+
+          window.location.href = data.report_url;
+        } catch (error) {
+          statusEl.textContent = error.message || "Analysis failed.";
+          statusEl.className = "status-line error";
+        } finally {
+          button.disabled = false;
+        }
+      });
+    </script>
+  </body>
+  </html>
